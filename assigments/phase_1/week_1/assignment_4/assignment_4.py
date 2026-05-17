@@ -28,7 +28,6 @@ def one_hot_encoding(sents, max_len=4):
             sent_vectors.append(vector)
             
         while len(sent_vectors) < max_len:
-            # Thêm vector toàn số 0 vào cuối câu
             sent_vectors.append(padding_vector)
             
         encoded_sents.append(sent_vectors)
