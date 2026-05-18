@@ -42,10 +42,8 @@ documents = [
 ]
 
 idf = InverseDocumentFrequency()
-# Khởi tạo từ điển trước
 idf.create_list_vocab(documents)
 
-# Tính toán IDF
 idf_values = idf.compute(documents)
 
 for word, val in idf_values.items():
