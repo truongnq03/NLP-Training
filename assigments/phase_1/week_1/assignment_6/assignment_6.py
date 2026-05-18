@@ -6,12 +6,14 @@ class TermFrequency():
 
     def compute(self, sents):
         all_tf_results = []
+        vocab = set()
 
         for sent in sents:
             lower_words = sent.lower().split()
             total_term_in_sent = len(lower_words)
             
             counter = Counter(lower_words)
+            vocab.update(lower_words)
             
             sent_tf = {}
             for word in counter:
@@ -19,7 +21,14 @@ class TermFrequency():
             
             all_tf_results.append(sent_tf)
 
-        return all_tf_results
+        sorted_vocab = sorted(list(vocab))
+
+        tf_array = []
+        for sent_tf in all_tf_results:
+            row = [sent_tf.get(word, 0.0) for word in sorted_vocab]
+            tf_array.append(row)
+
+        return tf_array, sorted_vocab
 
 documents = [
     "good boy",
@@ -28,9 +37,9 @@ documents = [
 ]
 
 tf = TermFrequency()
-results = tf.compute(documents)
+tf_matrix, vocabulary = tf.compute(documents)
 
-# In kết quả theo từng câu cho dễ nhìn
-for idx, sent_tf in enumerate(results):
-    print(f"Câu {idx + 1}: {documents[idx]}")
-    print(f"-> TF: {sent_tf}\n")
+print("Vocabulary (Thứ tự các cột):", vocabulary)
+print("TF Array:")
+for row in tf_matrix:
+    print(row)
