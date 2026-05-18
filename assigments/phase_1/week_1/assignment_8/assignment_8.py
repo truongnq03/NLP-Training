@@ -23,7 +23,7 @@ class InverseDocumentFrequency:
         idf_result = {}
         for word in vocab:
             df = sum(1 for word_set in sent_words_sets if word in word_set)
-            idf_result[word] = math.log(N / df)
+            idf_result[word] = math.log((N + 1) / (df + 1)) + 1
         return idf_result
 
 class TFIDF:
@@ -67,6 +67,13 @@ class TFIDF:
                     col_idx = vocab[word]
                     idf_val = idf_values.get(word, 0.0)
                     matrix[row_idx][col_idx] = round(tf_val * idf_val, 3)
+
+        for row_idx in range(num_rows):
+            row_sum_squares = sum(val ** 2 for val in matrix[row_idx])
+            if row_sum_squares > 0:
+                l2_norm = math.sqrt(row_sum_squares)
+                for col_idx in range(num_cols):
+                    matrix[row_idx][col_idx] = round(matrix[row_idx][col_idx] / l2_norm, 3)
             
         return matrix
 
