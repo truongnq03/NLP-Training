@@ -1,25 +1,45 @@
-def one_hot_encoding(sents):
-    vocab = {}
-    order = 0
-    for sent in sents:
-        for char in sent.split():
-            if char not in vocab:
-                vocab[char] = order
-                order += 1
-            else:
-                continue
+def build_vocab(sents):
+    vocab = {"<UNK>": 0}
+    order = 1
     
-    print(vocab)
-    list_vector = {}
-    for i, word in enumerate(vocab):
-        vector = [0 for _ in range(order)]
-        vector[i] = 1
-        list_vector[word] = vector
-    return list_vector
+    for sent in sents:
+        for word in sent.split():
+            if word not in vocab:
+                vocab[word] = order
+                order += 1
+    return vocab
+
+def one_hot_encoding(sents, vocab):
+    vocab_size = len(vocab)
+    all_sentences_encoded = []
+    
+    for sent in sents:
+        words = sent.split()
+        sent_vectors = []
+        
+        for word in words:
+            word_index = vocab.get(word, vocab["<UNK>"])
+            one_hot_vector = [0] * vocab_size
+            one_hot_vector[word_index] = 1
+            sent_vectors.append(one_hot_vector)
+            
+        all_sentences_encoded.append(sent_vectors)
+        
+    return all_sentences_encoded
 
 
-sents = [
+train_sents = [
     "I love NLP",
     "NLP is fun"
 ]
-print(one_hot_encoding(sents))
+
+vocab = build_vocab(train_sents)
+print("Vocab:", vocab)
+
+test_sents = [
+    "I love NLP",
+    "I love Deep Learning"
+]
+
+encoded_matrix = one_hot_encoding(test_sents, vocab)
+print(encoded_matrix)
